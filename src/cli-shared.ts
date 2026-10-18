@@ -76,8 +76,10 @@ export async function readIfExists(path: string): Promise<string> {
 export function valueFromEnvText(text: string, name: string): string | undefined {
   const match = new RegExp(`^\\s*(?:export\\s+)?${name}\\s*=(.*)$`, 'm').exec(text);
   if (!match) return undefined;
-  let value = match[1]!.trim();
-  if (/^(['"]).*\1$/.test(value)) value = value.slice(1, -1);
+  // As dotenv reads it: a quoted value ends at its closing quote; unquoted, `#` starts a comment.
+  const raw = match[1]!.trim();
+  const quoted = /^(['"`])(.*?)\1/.exec(raw);
+  const value = quoted ? quoted[2]!.trim() : raw.replace(/#.*$/, '').trim();
   return value || undefined;
 }
 

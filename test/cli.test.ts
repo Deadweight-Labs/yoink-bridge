@@ -131,6 +131,8 @@ describe('runCli', () => {
     expect(await readFile(fresh, 'utf8')).toBe(`YOINK_SECRET=${FIXED_SECRET}\n`);
     expect(withSecretLine('PORT=1', 'whsec_k')).toBe('PORT=1\nYOINK_SECRET=whsec_k\n');
     expect(withSecretLine('export YOINK_SECRET=""\n', 'whsec_k')).toBe('export YOINK_SECRET=whsec_k\n');
+    expect(withSecretLine('YOINK_SECRET= # from yoink\n', 'whsec_k')).toBe('YOINK_SECRET=whsec_k\n');
+    expect(withSecretLine('YOINK_SECRET="" # from yoink\n', 'whsec_k')).toBe('YOINK_SECRET=whsec_k\n');
   });
 
   it('keygen --env-file refuses to replace a key that is already set', async () => {
@@ -268,5 +270,11 @@ describe('check', () => {
     expect(secretFromEnvText("YOINK_SECRET='whsec_y'")).toBe('whsec_y');
     expect(secretFromEnvText('YOINK_SECRET=')).toBeUndefined();
     expect(secretFromEnvText('# YOINK_SECRET=whsec_z')).toBeUndefined();
+    expect(secretFromEnvText('YOINK_SECRET= # the key from the yoink app')).toBeUndefined();
+    expect(secretFromEnvText('YOINK_SECRET=whsec_x # from yoink')).toBe('whsec_x');
+    expect(secretFromEnvText('YOINK_SECRET=whsec_x#from yoink')).toBe('whsec_x');
+    expect(secretFromEnvText('YOINK_SECRET="whsec_x" # from yoink')).toBe('whsec_x');
+    expect(secretFromEnvText('YOINK_SECRET="" # from yoink')).toBeUndefined();
+    expect(secretFromEnvText('YOINK_SECRET=#from yoink\r\n')).toBeUndefined();
   });
 });

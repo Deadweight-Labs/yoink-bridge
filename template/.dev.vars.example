@@ -1,6 +1,6 @@
 # The key from yoink: Einstellungen › Ausgänge › Bridge einrichten › Schlüssel kopieren.
 # For local development, `npm run keygen` writes one into .dev.vars instead.
-YOINK_SECRET=
+YOINK_SECRET= # Key created in the yoink app: Einstellungen › Ausgänge › Bridge einrichten › Schlüssel kopieren (whsec_…)
 
 # Optional: each destination in bridge.ts turns on once its settings exist. In
 # Cloudflare, add them later under Worker › Settings › Variables and Secrets.

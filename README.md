@@ -8,6 +8,30 @@ or whatever your code does.
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/Deadweight-Labs/yoink-bridge/tree/main/template)
 
+**Setup, step by step:**
+
+1. **Copy the key in yoink.** On your iPhone: **Einstellungen › Ausgänge ›
+   Bridge einrichten › Schlüssel kopieren**. yoink creates the key (it starts
+   with `whsec_`).
+2. **Click Deploy to Cloudflare** (above) and fill in the form:
+   - **Git account:** your GitHub account. Keep "Create private Git
+     repository" checked if your descriptions are personal.
+   - **`YOINK_SECRET`:** paste the key from step 1. It is always the key from
+     the yoink app, never one you make up.
+   - Leave everything else as it is and click **Deploy**.
+3. **Connect yoink.** When the deploy is done, open the Worker's URL
+   (`https://yoink-bridge.<you>.workers.dev`) on your iPhone and tap **In
+   yoink öffnen**, or scan the QR code on that page.
+4. **Turn on Linear or GitHub** (optional): add their keys in Cloudflare
+   under Workers & Pages › your Worker › Settings › Variables and Secrets ›
+   Add (type **Secret**), deploy, then tap **Ziele aktualisieren** in yoink. Which keys:
+   [template/README.md › Turn on Linear and GitHub](template/README.md#turn-on-linear-and-github).
+
+**Deutsch, kurz:** In yoink unter Einstellungen › Ausgänge › Bridge
+einrichten den Schlüssel kopieren, auf „Deploy to Cloudflare“ klicken, den
+Schlüssel ins Feld `YOINK_SECRET` einfügen und deployen. Danach die
+Worker-URL auf dem iPhone öffnen und „In yoink öffnen“ tippen.
+
 - **Deploy in one click:** the base Worker in [`template/`](template) comes
   with Linear and GitHub Issues ready to switch on; your own logic goes into
   one file, `bridge.ts`.

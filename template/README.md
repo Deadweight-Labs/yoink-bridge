@@ -23,7 +23,9 @@ It is yours: your destinations and your own code live in
    `whsec_`) and copies it.
 2. **Deploy.** Click **Deploy to Cloudflare** in the
    [yoink-bridge README](https://github.com/Deadweight-Labs/yoink-bridge#yoink-bridge)
-   and paste the key as `YOINK_SECRET` in the deploy form. Cloudflare copies
+   and paste the key you just copied into the field **`YOINK_SECRET`**: that
+   is the key from the yoink app, never one you make up, and the only field
+   you have to fill. Cloudflare copies
    this base into a new repository in your GitHub account (choose a private
    repository if your descriptions are personal), creates the KV namespace
    and deploys. If you are reading this in your own copy, this step is done.

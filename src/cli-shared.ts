@@ -78,6 +78,7 @@ export function valueFromEnvText(text: string, name: string): string | undefined
   if (!match) return undefined;
   let value = match[1]!.trim();
   if (/^(['"]).*\1$/.test(value)) value = value.slice(1, -1);
+  else value = value.replace(/(^|\s)#.*$/, '').trim(); // unquoted: ` # …` is a comment, as in dotenv
   return value || undefined;
 }
 

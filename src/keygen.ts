@@ -23,7 +23,7 @@ export function parseKeygenArgs(argv: string[]): KeygenArgs {
   return { envFile: values['env-file'] };
 }
 
-const EMPTY_LINE = new RegExp(`^([ \\t]*(?:export[ \\t]+)?${SECRET_ENV_VAR}[ \\t]*=)[ \\t]*(?:""|'')?[ \\t]*$`, 'm');
+const EMPTY_LINE = new RegExp(`^([ \\t]*(?:export[ \\t]+)?${SECRET_ENV_VAR}[ \\t]*=)[ \\t]*(?:""|'')?[ \\t]*(?:#.*)?$`, 'm');
 
 /** `text` with the key filled into its empty `YOINK_SECRET=` line, or appended. */
 export function withSecretLine(text: string, secret: string): string {

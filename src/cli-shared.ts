@@ -2,7 +2,7 @@
 import { readFile } from 'node:fs/promises';
 
 /** The bridge's key: the env var `defineWorkerBridge` reads, and the line in `.dev.vars`. */
-export const SECRET_ENV_VAR = 'YOINK_SECRET';
+export const SECRET_ENV_VAR = 'KEY_FROM_YOINK_APP';
 
 /** A problem with the command line; reported without a stack trace. */
 export class UsageError extends Error {

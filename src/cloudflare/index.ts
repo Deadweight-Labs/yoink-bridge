@@ -1,7 +1,7 @@
 /**
  * `yoink-bridge/cloudflare`: everything a Cloudflare Worker needs around the
  * bridge, so your bridge file only contains your destinations: routing, the
- * one key from yoink (`YOINK_SECRET`), dedupe in KV, `waiting[]` for
+ * one key from yoink (`KEY_FROM_YOINK_APP`), dedupe in KV, `waiting[]` for
  * destinations that miss keys, and a small landing page. The bridge has no
  * website with secrets.
  */
@@ -33,7 +33,7 @@ export interface WorkerEnv {
    * The key yoink created in "Bridge einrichten" (`whsec_` + base64 of 32
    * bytes), added as a Worker secret. Every request must be signed with it.
    */
-  YOINK_SECRET?: string;
+  KEY_FROM_YOINK_APP?: string;
 }
 
 /** The Workers `ExecutionContext` (only what is used here). */
@@ -96,7 +96,7 @@ interface Slot {
  * landing page whose QR code and link open yoink with the bridge URL filled
  * in · else 404.
  *
- * Every request is verified against `YOINK_SECRET`; while it is missing or
+ * Every request is verified against `KEY_FROM_YOINK_APP`; while it is missing or
  * not a valid key, signed requests answer 503 with the reason and the landing
  * page says what to do. `BRIDGE_KV` holds recent `webhook-id`s for dedupe.
  * Destinations are built and validated once per env (isolate).
@@ -231,7 +231,7 @@ function landing(request: Request, url: URL, name: string | undefined, env: Work
       url: bridgeUrl,
       link,
       qrSvg: renderQrSvg(encodeQr(link), { title: strings(lang).qr }),
-      keyProblem: secretProblem(env?.YOINK_SECRET) ?? undefined,
+      keyProblem: secretProblem(env?.KEY_FROM_YOINK_APP) ?? undefined,
       settingsUrl: dashboardLink(url.hostname),
     },
     nonce,
@@ -242,24 +242,24 @@ function landing(request: Request, url: URL, name: string | undefined, env: Work
   });
 }
 
-/** `YOINK_SECRET`, trimmed; a 503 with the reason while it is missing or not a valid key. */
+/** `KEY_FROM_YOINK_APP`, trimmed; a 503 with the reason while it is missing or not a valid key. */
 function workerSecret(env: WorkerEnv): string {
-  const problem = secretProblem(env.YOINK_SECRET);
+  const problem = secretProblem(env.KEY_FROM_YOINK_APP);
   if (problem === 'missing') {
     throw new BridgeError(
       503,
-      'YOINK_SECRET is not set on this bridge: add the key from yoink (Einstellungen › Ausgänge › Bridge einrichten › ' +
+      'KEY_FROM_YOINK_APP is not set on this bridge: add the key from yoink (Einstellungen › Ausgänge › Bridge einrichten › ' +
         'Schlüssel kopieren) as a secret in the Worker settings',
     );
   }
   if (problem === 'invalid') {
     throw new BridgeError(
       503,
-      'YOINK_SECRET is not a valid key (expected whsec_ + base64 of 32 bytes, as yoink copies it): ' +
+      'KEY_FROM_YOINK_APP is not a valid key (expected whsec_ + base64 of 32 bytes, as yoink copies it): ' +
         'paste it again in the Worker settings',
     );
   }
-  return (env.YOINK_SECRET as string).trim();
+  return (env.KEY_FROM_YOINK_APP as string).trim();
 }
 
 /** An env key counts as missing when it is absent or a blank string. */

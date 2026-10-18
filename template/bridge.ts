@@ -34,7 +34,7 @@ import { linear } from 'yoink-bridge/presets/linear';
 // For a recipe (see recipes/):
 // import { routerDestinations } from './recipes/router.ts';
 
-/** This Worker's settings (YOINK_SECRET and BRIDGE_KV come with WorkerEnv). */
+/** This Worker's settings (KEY_FROM_YOINK_APP and BRIDGE_KV come with WorkerEnv). */
 interface Env extends WorkerEnv {
   GITHUB_TOKEN?: string;
   GITHUB_REPO?: string;

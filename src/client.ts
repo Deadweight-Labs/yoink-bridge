@@ -29,7 +29,7 @@ export function validateToolUrl(input: string): string {
 }
 
 /**
- * The key to sign with: `--secret`; else `YOINK_SECRET` from `--env-file` or
+ * The key to sign with: `--secret`; else `KEY_FROM_YOINK_APP` from `--env-file` or
  * the environment (an `--env-file` without it is an error); else, without
  * `--env-file`, asked for (hidden) on a terminal.
  */

@@ -171,7 +171,7 @@ describe('router recipe', () => {
         headers: { 'webhook-id': 'msg_t', 'webhook-timestamp': String(timestamp), 'webhook-signature': await signWebhook({ secret, id: 'msg_t', timestamp, body }) },
         body,
       });
-      const res = await worker.fetch(request, { BRIDGE_KV: new MemoryKV(), YOINK_SECRET: secret, ...env }, { waitUntil() {} });
+      const res = await worker.fetch(request, { BRIDGE_KV: new MemoryKV(), KEY_FROM_YOINK_APP: secret, ...env }, { waitUntil() {} });
       return res.status === 200 ? parseManifest(await res.text()) : res.status;
     };
     const waiting = async (env: Record<string, unknown>) => {

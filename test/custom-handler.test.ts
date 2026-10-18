@@ -48,7 +48,7 @@ describe('custom-handler recipe', () => {
 
   it('waits for FORWARD_URL in the manifest', async () => {
     const worker = defineWorkerBridge<WorkerEnv & { FORWARD_URL?: string }>({ destinations: (env) => ({ notes: forwardDestination(env, options) }) });
-    const res = await worker.fetch(await signedRequest(ping(), { url: 'https://r.example.workers.dev/' }), { BRIDGE_KV: new MemoryKV(), YOINK_SECRET: SECRET }, { waitUntil() {} });
+    const res = await worker.fetch(await signedRequest(ping(), { url: 'https://r.example.workers.dev/' }), { BRIDGE_KV: new MemoryKV(), KEY_FROM_YOINK_APP: SECRET }, { waitUntil() {} });
     expect(parseManifest(await res.text()).waiting).toEqual([{ id: 'notes', name: 'Notizen', missing: ['FORWARD_URL'] }]);
   });
 });

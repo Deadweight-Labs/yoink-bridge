@@ -55,7 +55,7 @@ describe('mode "all"', () => {
 
   it('the Worker manifest marks it too', async () => {
     const worker = defineWorkerBridge<WorkerEnv>({ destinations: () => ({ inbox: { name: 'Inbox', mode: 'all', onEntry: () => {} } }) });
-    const env = { BRIDGE_KV: new MemoryKV(), YOINK_SECRET: SECRET };
+    const env = { BRIDGE_KV: new MemoryKV(), KEY_FROM_YOINK_APP: SECRET };
     const res = await worker.fetch(await signedRequest(ping(), { url: `${ORIGIN}/` }), env, ctx);
     expect(describeBridge(await res.text())).toContain('mode:        all (gets every new entry – switch it on in yoink)');
   });
@@ -185,9 +185,9 @@ describe('presets as building blocks', () => {
 
 describe('async destinations', () => {
   interface Env extends WorkerEnv {
-    YOINK_SECRET: string;
+    KEY_FROM_YOINK_APP: string;
   }
-  const env = (): Env => ({ BRIDGE_KV: new MemoryKV(), YOINK_SECRET: SECRET });
+  const env = (): Env => ({ BRIDGE_KV: new MemoryKV(), KEY_FROM_YOINK_APP: SECRET });
   const pingIds = async (worker: { fetch: (r: Request, e: Env, c: typeof ctx) => Promise<Response> }, e: Env) =>
     parseManifest(await (await worker.fetch(await signedRequest(ping(), { url: `${ORIGIN}/` }), e, ctx)).text()).destinations.map(
       (d) => d.id,
@@ -273,7 +273,7 @@ describe('send to a mode "all" destination', () => {
       stdout: (t) => void (out += t),
       stderr: () => {},
       isTTY: false,
-      env: { YOINK_SECRET: SECRET },
+      env: { KEY_FROM_YOINK_APP: SECRET },
       fetch: (url, init) => bridge.fetch(new Request(url, init)),
     };
     expect(await runCli(['send', '--url', 'http://localhost:8787', '--destination', 'inbox'], io)).toBe(0);

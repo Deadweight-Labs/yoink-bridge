@@ -40,7 +40,7 @@ const io = (target = bridge, overrides: Partial<CliIO> = {}): CliIO => ({
   stdout: (t) => void (out += t),
   stderr: (t) => void (err += t),
   isTTY: false,
-  env: { YOINK_SECRET: SECRET },
+  env: { KEY_FROM_YOINK_APP: SECRET },
   fetch: (url, init) => target.fetch(new Request(url, init)),
   ...overrides,
 });
@@ -103,7 +103,7 @@ describe('send', () => {
 
   it('reads the key from --env-file, falling back to the environment, or from --secret', async () => {
     const envFile = join(dir, '.dev.vars');
-    await writeFile(envFile, `LINEAR_TEAM=x\nYOINK_SECRET=${SECRET}\n`);
+    await writeFile(envFile, `LINEAR_TEAM=x\nKEY_FROM_YOINK_APP=${SECRET}\n`);
     expect(await runCli(['send', '--url', URL_, '--destination', 'test', '--env-file', envFile], io(bridge, { env: {} }))).toBe(0);
 
     const withoutKey = join(dir, '.env');
@@ -111,7 +111,7 @@ describe('send', () => {
     expect(await runCli(['send', '--url', URL_, '--destination', 'test', '--env-file', withoutKey], io())).toBe(0);
     err = '';
     expect(await runCli(['send', '--url', URL_, '--env-file', withoutKey], io(bridge, { env: {} }))).toBe(1);
-    expect(err).toContain('does not set YOINK_SECRET, and it is not in the environment either');
+    expect(err).toContain('does not set KEY_FROM_YOINK_APP, and it is not in the environment either');
 
     err = '';
     expect(await runCli(['send', '--url', URL_, '--destination', 'test', '--secret', SECRET], io(bridge, { env: {} }))).toBe(0);

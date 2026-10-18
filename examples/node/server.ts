@@ -3,7 +3,7 @@
 //
 //   node --env-file=.env examples/node/server.ts      # Node 22.18+, no build step
 //
-// .env (git-ignored) holds YOINK_SECRET: the key yoink created (Einstellungen ›
+// .env (git-ignored) holds KEY_FROM_YOINK_APP: the key yoink created (Einstellungen ›
 // Ausgänge › Bridge einrichten › Schlüssel kopieren), or `npm run cli -- keygen`
 // for a local test.
 //
@@ -13,9 +13,9 @@ import { createServer } from 'node:http';
 import { createBridge, describeBridge } from '../../src/index.ts';
 import { toNodeHandler } from '../../src/node.ts';
 
-const secret = process.env.YOINK_SECRET;
+const secret = process.env.KEY_FROM_YOINK_APP;
 if (!secret) {
-  console.error('Set YOINK_SECRET: the key from yoink (Einstellungen › Ausgänge › Bridge einrichten › Schlüssel kopieren).');
+  console.error('Set KEY_FROM_YOINK_APP: the key from yoink (Einstellungen › Ausgänge › Bridge einrichten › Schlüssel kopieren).');
   process.exit(1);
 }
 

@@ -111,7 +111,7 @@ describe('runCli', () => {
 
   it('keygen prints a key line on stdout and the dev-only note on stderr', async () => {
     expect(await runCli(['keygen'], io())).toBe(0);
-    expect(out).toBe(`YOINK_SECRET=${FIXED_SECRET}\n`);
+    expect(out).toBe(`KEY_FROM_YOINK_APP=${FIXED_SECRET}\n`);
     expect(err).toContain('For local development only');
     expect(err).toContain('Einstellungen › Ausgänge › Bridge einrichten › Schlüssel kopieren');
     expect(await runCli(['keygen', '--secret', 'x'], io())).toBe(1);
@@ -119,28 +119,28 @@ describe('runCli', () => {
 
   it('keygen --env-file fills the empty line of .dev.vars.example (mode 600), appends otherwise', async () => {
     const envFile = join(dir, '.dev.vars');
-    await writeFile(envFile, '# The key from yoink\nYOINK_SECRET=\n# GITHUB_TOKEN=\n');
+    await writeFile(envFile, '# The key from yoink\nKEY_FROM_YOINK_APP=\n# GITHUB_TOKEN=\n');
     expect(await runCli(['keygen', '--env-file', envFile], io())).toBe(0);
-    expect(await readFile(envFile, 'utf8')).toBe(`# The key from yoink\nYOINK_SECRET=${FIXED_SECRET}\n# GITHUB_TOKEN=\n`);
+    expect(await readFile(envFile, 'utf8')).toBe(`# The key from yoink\nKEY_FROM_YOINK_APP=${FIXED_SECRET}\n# GITHUB_TOKEN=\n`);
     expect((await stat(envFile)).mode & 0o777).toBe(0o600);
-    expect(out).toContain(`Wrote a new YOINK_SECRET to ${envFile}`);
+    expect(out).toContain(`Wrote a new KEY_FROM_YOINK_APP to ${envFile}`);
     expect(out).not.toContain(FIXED_SECRET);
 
     const fresh = join(dir, 'fresh.vars');
     expect(await runCli(['keygen', '--env-file', fresh], io())).toBe(0);
-    expect(await readFile(fresh, 'utf8')).toBe(`YOINK_SECRET=${FIXED_SECRET}\n`);
-    expect(withSecretLine('PORT=1', 'whsec_k')).toBe('PORT=1\nYOINK_SECRET=whsec_k\n');
-    expect(withSecretLine('export YOINK_SECRET=""\n', 'whsec_k')).toBe('export YOINK_SECRET=whsec_k\n');
-    expect(withSecretLine('YOINK_SECRET= # from yoink\n', 'whsec_k')).toBe('YOINK_SECRET=whsec_k\n');
-    expect(withSecretLine('YOINK_SECRET="" # from yoink\n', 'whsec_k')).toBe('YOINK_SECRET=whsec_k\n');
+    expect(await readFile(fresh, 'utf8')).toBe(`KEY_FROM_YOINK_APP=${FIXED_SECRET}\n`);
+    expect(withSecretLine('PORT=1', 'whsec_k')).toBe('PORT=1\nKEY_FROM_YOINK_APP=whsec_k\n');
+    expect(withSecretLine('export KEY_FROM_YOINK_APP=""\n', 'whsec_k')).toBe('export KEY_FROM_YOINK_APP=whsec_k\n');
+    expect(withSecretLine('KEY_FROM_YOINK_APP= # from yoink\n', 'whsec_k')).toBe('KEY_FROM_YOINK_APP=whsec_k\n');
+    expect(withSecretLine('KEY_FROM_YOINK_APP="" # from yoink\n', 'whsec_k')).toBe('KEY_FROM_YOINK_APP=whsec_k\n');
   });
 
   it('keygen --env-file refuses to replace a key that is already set', async () => {
     const envFile = join(dir, '.dev.vars');
-    await writeFile(envFile, `YOINK_SECRET=${FIXED_SECRET}\n`);
+    await writeFile(envFile, `KEY_FROM_YOINK_APP=${FIXED_SECRET}\n`);
     expect(await runCli(['keygen', '--env-file', envFile], io({ randomBytes: undefined }))).toBe(1);
-    expect(err).toContain('already sets YOINK_SECRET');
-    expect(await readFile(envFile, 'utf8')).toBe(`YOINK_SECRET=${FIXED_SECRET}\n`);
+    expect(err).toContain('already sets KEY_FROM_YOINK_APP');
+    expect(await readFile(envFile, 'utf8')).toBe(`KEY_FROM_YOINK_APP=${FIXED_SECRET}\n`);
   });
 });
 
@@ -187,7 +187,7 @@ describe('check', () => {
   });
 
   it('sends a signed ping like yoink and prints the destinations yoink reads', async () => {
-    const code = await runCli(['check', '--url', BRIDGE_URL], io({ env: { YOINK_SECRET: FIXED_SECRET } }));
+    const code = await runCli(['check', '--url', BRIDGE_URL], io({ env: { KEY_FROM_YOINK_APP: FIXED_SECRET } }));
     expect(err).toBe('');
     expect(code).toBe(0);
     expect(out).toBe(`${BRIDGE_URL} answered 200: URL and key work.\n\n${describeBridge(bridge)}`);
@@ -204,8 +204,8 @@ describe('check', () => {
 
   it('takes the key from --secret, then --env-file, then the environment, then asks', async () => {
     const envFile = join(dir, '.dev.vars');
-    await writeFile(envFile, `SLACK_WEBHOOK_URL=https://x\nYOINK_SECRET="${FIXED_SECRET}"\n`);
-    const wrong = { YOINK_SECRET: generateSecret() };
+    await writeFile(envFile, `SLACK_WEBHOOK_URL=https://x\nKEY_FROM_YOINK_APP="${FIXED_SECRET}"\n`);
+    const wrong = { KEY_FROM_YOINK_APP: generateSecret() };
     expect(await runCli(['check', '--url', BRIDGE_URL, '--env-file', envFile], io({ env: wrong }))).toBe(0);
     expect(out).toContain('yoink reads 2 destinations from "Meine Bridge"');
     expect(await runCli(['check', '--url', BRIDGE_URL, '--secret', FIXED_SECRET, '--env-file', join(dir, 'none')], io({ env: wrong }))).toBe(0);
@@ -221,14 +221,14 @@ describe('check', () => {
 
   it('explains a wrong key', async () => {
     const other = generateSecret();
-    expect(await runCli(['check', '--url', BRIDGE_URL], io({ env: { YOINK_SECRET: other } }))).toBe(1);
+    expect(await runCli(['check', '--url', BRIDGE_URL], io({ env: { KEY_FROM_YOINK_APP: other } }))).toBe(1);
     expect(err).toContain('answered 401: {"error":"invalid signature"}');
-    expect(err).toContain('Is YOINK_SECRET the same key on both sides');
+    expect(err).toContain('Is KEY_FROM_YOINK_APP the same key on both sides');
     expect(out).toBe('');
   });
 
   it('reports redirects, unreachable bridges and a missing or malformed key', async () => {
-    const env = { YOINK_SECRET: FIXED_SECRET };
+    const env = { KEY_FROM_YOINK_APP: FIXED_SECRET };
     const redirect = async () => new Response(null, { status: 301, headers: { location: 'https://elsewhere/' } });
     expect(await runCli(['check', '--url', BRIDGE_URL], io({ env, fetch: redirect }))).toBe(1);
     expect(err).toContain('does not follow redirects');
@@ -248,7 +248,7 @@ describe('check', () => {
     const envFile = join(dir, '.env');
     await writeFile(envFile, 'PORT=1\n');
     expect(await runCli(['check', '--url', BRIDGE_URL, '--env-file', envFile], io())).toBe(1);
-    expect(err).toContain('does not set YOINK_SECRET, and it is not in the environment either');
+    expect(err).toContain('does not set KEY_FROM_YOINK_APP, and it is not in the environment either');
 
     err = '';
     expect(await runCli(['check', '--url', BRIDGE_URL, '--secret', 'whsec_***'], io())).toBe(1);
@@ -266,15 +266,15 @@ describe('check', () => {
   });
 
   it('parses dotenv lines', () => {
-    expect(secretFromEnvText('A=1\nexport YOINK_SECRET = whsec_x \n')).toBe('whsec_x');
-    expect(secretFromEnvText("YOINK_SECRET='whsec_y'")).toBe('whsec_y');
-    expect(secretFromEnvText('YOINK_SECRET=')).toBeUndefined();
-    expect(secretFromEnvText('# YOINK_SECRET=whsec_z')).toBeUndefined();
-    expect(secretFromEnvText('YOINK_SECRET= # the key from the yoink app')).toBeUndefined();
-    expect(secretFromEnvText('YOINK_SECRET=whsec_x # from yoink')).toBe('whsec_x');
-    expect(secretFromEnvText('YOINK_SECRET=whsec_x#from yoink')).toBe('whsec_x');
-    expect(secretFromEnvText('YOINK_SECRET="whsec_x" # from yoink')).toBe('whsec_x');
-    expect(secretFromEnvText('YOINK_SECRET="" # from yoink')).toBeUndefined();
-    expect(secretFromEnvText('YOINK_SECRET=#from yoink\r\n')).toBeUndefined();
+    expect(secretFromEnvText('A=1\nexport KEY_FROM_YOINK_APP = whsec_x \n')).toBe('whsec_x');
+    expect(secretFromEnvText("KEY_FROM_YOINK_APP='whsec_y'")).toBe('whsec_y');
+    expect(secretFromEnvText('KEY_FROM_YOINK_APP=')).toBeUndefined();
+    expect(secretFromEnvText('# KEY_FROM_YOINK_APP=whsec_z')).toBeUndefined();
+    expect(secretFromEnvText('KEY_FROM_YOINK_APP= # the key from the yoink app')).toBeUndefined();
+    expect(secretFromEnvText('KEY_FROM_YOINK_APP=whsec_x # from yoink')).toBe('whsec_x');
+    expect(secretFromEnvText('KEY_FROM_YOINK_APP=whsec_x#from yoink')).toBe('whsec_x');
+    expect(secretFromEnvText('KEY_FROM_YOINK_APP="whsec_x" # from yoink')).toBe('whsec_x');
+    expect(secretFromEnvText('KEY_FROM_YOINK_APP="" # from yoink')).toBeUndefined();
+    expect(secretFromEnvText('KEY_FROM_YOINK_APP=#from yoink\r\n')).toBeUndefined();
   });
 });

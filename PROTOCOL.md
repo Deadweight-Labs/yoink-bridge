@@ -27,7 +27,7 @@ changes.
 Bridge code (user)             yoink (iPhone)                        decision model (via yoink's gateway)
 ──────────────────             ──────────────────────────            ────────────────────────────────────
 destinations: {                1. "Bridge einrichten": new key, copied
-  bugs: "bugs in the app"         → the user gives it to the bridge (YOINK_SECRET)
+  bugs: "bugs in the app"         → the user gives it to the bridge (KEY_FROM_YOINK_APP)
   shop: "things to buy"        2. open the bridge link, ping ─────► bridge
 }                            ◄──────── destinations + descriptions
                                3. new entry (settled for 25 s)
@@ -80,7 +80,7 @@ copies it once, for the user to give to the bridge (§9); afterwards it lives
 in yoink's keychain only. Every device of the user that has this key is the
 same connection. The bridge verifies every request against this one key and
 needs no storage for it. On the bridge it is configuration (for
-`yoink-bridge` on Cloudflare: the Worker secret `YOINK_SECRET`), never part of
+`yoink-bridge` on Cloudflare: the Worker secret `KEY_FROM_YOINK_APP`), never part of
 a link, a web page or a log.
 
 ## 3. Destinations: what the bridge tells yoink about itself
@@ -401,7 +401,7 @@ sent again and again.
    (`whsec_` + base64 of 32 random bytes), keeps it in the keychain and
    copies it to the clipboard ("Schlüssel kopieren").
 2. The user gives the key to the bridge. With `yoink-bridge` on Cloudflare,
-   they paste it into the deploy form as the secret `YOINK_SECRET`; any other
+   they paste it into the deploy form as the secret `KEY_FROM_YOINK_APP`; any other
    bridge takes it as configuration (an environment variable, a secret).
    Whitespace around it is ignored.
 3. The bridge's start page links back to yoink:

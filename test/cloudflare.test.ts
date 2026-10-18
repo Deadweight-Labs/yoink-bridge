@@ -30,7 +30,7 @@ afterEach(() => {
 });
 
 function makeEnv(extra: Partial<Env> = {}): Env & { BRIDGE_KV: MemoryKV } {
-  return { YOINK_SECRET: SECRET, ...extra, BRIDGE_KV: new MemoryKV() };
+  return { KEY_FROM_YOINK_APP: SECRET, ...extra, BRIDGE_KV: new MemoryKV() };
 }
 
 function makeWorker(extra: Partial<WorkerBridgeConfig<Env>> = {}) {
@@ -88,22 +88,22 @@ describe('landing page', () => {
 
   it('says when the key is missing or invalid, and where to add it', async () => {
     const worker = makeWorker();
-    const missing = await (await worker.fetch(get('/'), makeEnv({ YOINK_SECRET: '  ' }), ctx)).text();
-    expect(missing).toContain('<div class="warn" role="alert"><p><strong>The key is missing: YOINK_SECRET is not set');
-    expect(missing).toContain('Settings › Variables and Secrets › Add, type “Secret”, name YOINK_SECRET');
+    const missing = await (await worker.fetch(get('/'), makeEnv({ KEY_FROM_YOINK_APP: '  ' }), ctx)).text();
+    expect(missing).toContain('<div class="warn" role="alert"><p><strong>The key is missing: KEY_FROM_YOINK_APP is not set');
+    expect(missing).toContain('Settings › Variables and Secrets › Add, type “Secret”, name KEY_FROM_YOINK_APP');
     expect(missing).toContain(
       '<a href="https://dash.cloudflare.com/?to=/:account/workers/services/view/yoink-bridge/production/settings">',
     );
     expect(missing).toContain('Open in yoink'); // the link stays, for after the key is added
 
     const invalid = await (
-      await worker.fetch(get('/', { 'accept-language': 'de' }), makeEnv({ YOINK_SECRET: 'whsec_tooShort' }), ctx)
+      await worker.fetch(get('/', { 'accept-language': 'de' }), makeEnv({ KEY_FROM_YOINK_APP: 'whsec_tooShort' }), ctx)
     ).text();
-    expect(invalid).toContain('YOINK_SECRET ist kein gültiger Schlüssel.');
+    expect(invalid).toContain('KEY_FROM_YOINK_APP ist kein gültiger Schlüssel.');
     expect(invalid).toContain('Einstellungen › Ausgänge › Bridge einrichten › Schlüssel kopieren');
     expect(invalid).not.toContain('tooShort');
 
-    const custom = await (await worker.fetch(new Request('https://bridge.example.com/'), makeEnv({ YOINK_SECRET: undefined }), ctx)).text();
+    const custom = await (await worker.fetch(new Request('https://bridge.example.com/'), makeEnv({ KEY_FROM_YOINK_APP: undefined }), ctx)).text();
     expect(custom).toContain('role="alert"');
     expect(custom).not.toContain('dash.cloudflare.com');
   });
@@ -142,9 +142,9 @@ describe('routing', () => {
     expect((await worker.fetch(new Request(`${ORIGIN}/`, { method: 'PUT' }), env, ctx)).status).toBe(405);
   });
 
-  it('verifies every request against YOINK_SECRET (trimmed), and nothing else', async () => {
+  it('verifies every request against KEY_FROM_YOINK_APP (trimmed), and nothing else', async () => {
     const worker = makeWorker();
-    const res = await worker.fetch(await signedPing(SECRET), makeEnv({ YOINK_SECRET: `  ${SECRET}\n` }), ctx);
+    const res = await worker.fetch(await signedPing(SECRET), makeEnv({ KEY_FROM_YOINK_APP: `  ${SECRET}\n` }), ctx);
     expect(res.status).toBe(200);
     expect(parseManifest(await res.text()).bridgeName).toBe('Meine Bridge');
     expect((await worker.fetch(await signedPing(generateSecret()), makeEnv(), ctx)).status).toBe(401);
@@ -153,24 +153,24 @@ describe('routing', () => {
     expect(await sent.json()).toEqual({ label: 'Angekommen ✓' });
   });
 
-  it('503 with the reason while YOINK_SECRET is missing or not a valid key; it never appears in the answer', async () => {
+  it('503 with the reason while KEY_FROM_YOINK_APP is missing or not a valid key; it never appears in the answer', async () => {
     const worker = makeWorker();
     for (const [value, reason] of [
-      [undefined, /^YOINK_SECRET is not set on this bridge: add the key from yoink/],
-      ['', /^YOINK_SECRET is not set/],
-      ['whsec_c2hvcnQ=', /^YOINK_SECRET is not a valid key \(expected whsec_ \+ base64 of 32 bytes/],
-      [SECRET.slice(6), /^YOINK_SECRET is not a valid key/],
+      [undefined, /^KEY_FROM_YOINK_APP is not set on this bridge: add the key from yoink/],
+      ['', /^KEY_FROM_YOINK_APP is not set/],
+      ['whsec_c2hvcnQ=', /^KEY_FROM_YOINK_APP is not a valid key \(expected whsec_ \+ base64 of 32 bytes/],
+      [SECRET.slice(6), /^KEY_FROM_YOINK_APP is not a valid key/],
     ] as const) {
-      const res = await worker.fetch(await signedPing(SECRET), makeEnv({ YOINK_SECRET: value }), ctx);
+      const res = await worker.fetch(await signedPing(SECRET), makeEnv({ KEY_FROM_YOINK_APP: value }), ctx);
       expect(res.status, String(value)).toBe(503);
       const text = await res.text();
       expect(JSON.parse(text).error).toMatch(reason);
       if (value) expect(text).not.toContain(value);
     }
     // Setting the key makes the same Worker answer right away.
-    const env = makeEnv({ YOINK_SECRET: undefined });
+    const env = makeEnv({ KEY_FROM_YOINK_APP: undefined });
     expect((await worker.fetch(await signedPing(SECRET), env, ctx)).status).toBe(503);
-    env.YOINK_SECRET = SECRET;
+    env.KEY_FROM_YOINK_APP = SECRET;
     expect((await worker.fetch(await signedPing(SECRET), env, ctx)).status).toBe(200);
   });
 
@@ -205,7 +205,7 @@ describe('routing', () => {
     const bad = defineWorkerBridge<Env>({ destinations: () => ({ Bad: { name: 'x', onEntry: () => {} } }) });
     expect((await bad.fetch(await signedPing(SECRET), env, ctx)).status).toBe(500);
     const noKv = makeWorker();
-    expect((await noKv.fetch(await signedPing(SECRET), { YOINK_SECRET: SECRET } as unknown as Env, ctx)).status).toBe(500);
+    expect((await noKv.fetch(await signedPing(SECRET), { KEY_FROM_YOINK_APP: SECRET } as unknown as Env, ctx)).status).toBe(500);
     expect(console.error).toHaveBeenCalledWith(expect.stringContaining('BRIDGE_KV is missing'));
   });
 });

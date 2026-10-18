@@ -35,11 +35,11 @@ const STRINGS = {
     open: 'Open in yoink',
     noKey: 'This page never shows the key.',
     qr: 'QR code that opens yoink with this bridge’s address',
-    keyMissing: 'The key is missing: YOINK_SECRET is not set, so yoink can’t connect yet.',
-    keyInvalid: 'YOINK_SECRET is not a valid key. It starts with whsec_, exactly as yoink copies it.',
+    keyMissing: 'The key is missing: KEY_FROM_YOINK_APP is not set, so yoink can’t connect yet.',
+    keyInvalid: 'KEY_FROM_YOINK_APP is not a valid key. It starts with whsec_, exactly as yoink copies it.',
     keyHowTo:
       'In yoink: Settings › Outputs › Set up bridge › Copy key. Then in Cloudflare: Workers & Pages › this Worker › ' +
-      'Settings › Variables and Secrets › Add, type “Secret”, name YOINK_SECRET, paste the key, Deploy.',
+      'Settings › Variables and Secrets › Add, type “Secret”, name KEY_FROM_YOINK_APP, paste the key, Deploy.',
     keySettings: 'Open this Worker’s settings',
     notFound: 'Not found.',
   },
@@ -52,11 +52,11 @@ const STRINGS = {
     open: 'In yoink öffnen',
     noKey: 'Diese Seite zeigt den Schlüssel nie.',
     qr: 'QR-Code, der yoink mit der Adresse dieser Bridge öffnet',
-    keyMissing: 'Der Schlüssel fehlt: YOINK_SECRET ist nicht gesetzt, darum kann yoink sich noch nicht verbinden.',
-    keyInvalid: 'YOINK_SECRET ist kein gültiger Schlüssel. Er beginnt mit whsec_, genau so, wie yoink ihn kopiert.',
+    keyMissing: 'Der Schlüssel fehlt: KEY_FROM_YOINK_APP ist nicht gesetzt, darum kann yoink sich noch nicht verbinden.',
+    keyInvalid: 'KEY_FROM_YOINK_APP ist kein gültiger Schlüssel. Er beginnt mit whsec_, genau so, wie yoink ihn kopiert.',
     keyHowTo:
       'In yoink: Einstellungen › Ausgänge › Bridge einrichten › Schlüssel kopieren. Dann in Cloudflare: Workers & Pages › ' +
-      'dieser Worker › Settings › Variables and Secrets › Add, Typ „Secret“, Name YOINK_SECRET, Schlüssel einfügen, Deploy.',
+      'dieser Worker › Settings › Variables and Secrets › Add, Typ „Secret“, Name KEY_FROM_YOINK_APP, Schlüssel einfügen, Deploy.',
     keySettings: 'Einstellungen dieses Workers öffnen',
     notFound: 'Nicht gefunden.',
   },
@@ -102,7 +102,7 @@ export interface LandingView {
   /** `yoink://ausgang?v=1&url=…&name=…`, without a key. */
   link: string;
   qrSvg: string;
-  /** Set while `YOINK_SECRET` is missing or not a valid key. */
+  /** Set while `KEY_FROM_YOINK_APP` is missing or not a valid key. */
   keyProblem?: 'missing' | 'invalid';
   /** Dashboard link to this Worker's settings, if known. */
   settingsUrl?: string;

@@ -25,8 +25,9 @@ with a fresh history. It implements the yoink webhook format v1
   - The manifest reports `relay.sdk` as `yoink-bridge/<version>`. The
     manifest field itself keeps its protocol name `relay`.
   - The key setting `YOINK_SECRET` → `KEY_FROM_YOINK_APP`: Cloudflare's
-    deploy form shows no hint for secrets, only their names, so the name says
-    where the key comes from.
+    deploy form showed only the name for this secret, not its `package.json`
+    description (kept in case it ever shows up), so the name says where the
+    key comes from.
   - The base Worker's file is `bridge.ts` (was `relay.ts`), its default name
     "Meine Bridge"; in yoink the setup is called "Bridge einrichten".
 

@@ -70,8 +70,5 @@
     "type": "git",
     "url": "git+https://github.com/Deadweight-Labs/yoink-bridge.git"
   },
-  "homepage": "https://github.com/Deadweight-Labs/yoink-bridge#readme",
-  "bugs": {
-    "url": "https://github.com/Deadweight-Labs/yoink-bridge/issues"
-  }
+  "homepage": "https://github.com/Deadweight-Labs/yoink-bridge#readme"
 }

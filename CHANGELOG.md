@@ -23,8 +23,10 @@ with a fresh history. It implements the yoink webhook format v1
     `WorkerBridgeConfig`; the KV binding `RELAY_KV` → `BRIDGE_KV`; the Worker
     name `yoink-bridge` (`https://yoink-bridge.<you>.workers.dev`).
   - The manifest reports `relay.sdk` as `yoink-bridge/<version>`. The
-    manifest field itself keeps its protocol name `relay`, and the key stays
-    `YOINK_SECRET`.
+    manifest field itself keeps its protocol name `relay`.
+  - The key setting `YOINK_SECRET` → `KEY_FROM_YOINK_APP`: Cloudflare's
+    deploy form shows no hint for secrets, only their names, so the name says
+    where the key comes from.
   - The base Worker's file is `bridge.ts` (was `relay.ts`), its default name
     "Meine Bridge"; in yoink the setup is called "Bridge einrichten".
 
@@ -74,7 +76,7 @@ What the SDK does as of this release:
   lower-level calls (`createIssue`, `commentOnIssue`, `post`, …) and
   `updateComment` for the "In yoink geändert" text. German texts like
   yoink. Permanent upstream errors → 422, temporary ones → 502 (retried).
-- **Cloudflare adapter** (`defineWorkerBridge`): routing, `YOINK_SECRET`
+- **Cloudflare adapter** (`defineWorkerBridge`): routing, `KEY_FROM_YOINK_APP`
   (503 with the reason while it is missing or invalid), dedupe in
   `BRIDGE_KV`, destinations that wait for their `requires`, sync or async
   `destinations(env)`, your own `routes`, and a start page with an

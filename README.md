@@ -16,7 +16,7 @@ or whatever your code does.
 2. **Click Deploy to Cloudflare** (above) and fill in the form:
    - **Git account:** your GitHub account. Keep "Create private Git
      repository" checked if your descriptions are personal.
-   - **`YOINK_SECRET`:** paste the key from step 1. It is always the key from
+   - **`KEY_FROM_YOINK_APP`:** paste the key from step 1. It is always the key from
      the yoink app, never one you make up.
    - Leave everything else as it is and click **Deploy**.
 3. **Connect yoink.** When the deploy is done, open the Worker's URL
@@ -29,7 +29,7 @@ or whatever your code does.
 
 **Deutsch, kurz:** In yoink unter Einstellungen › Ausgänge › Bridge
 einrichten den Schlüssel kopieren, auf „Deploy to Cloudflare“ klicken, den
-Schlüssel ins Feld `YOINK_SECRET` einfügen und deployen. Danach die
+Schlüssel ins Feld `KEY_FROM_YOINK_APP` einfügen und deployen. Danach die
 Worker-URL auf dem iPhone öffnen und „In yoink öffnen“ tippen.
 
 - **Deploy in one click:** the base Worker in [`template/`](template) comes
@@ -135,8 +135,8 @@ export default defineWorkerBridge<Env>({
 }
 ```
 
-Add the key from yoink as the secret `YOINK_SECRET`
-(`npx wrangler secret put YOINK_SECRET`), deploy, open the Worker's URL on
+Add the key from yoink as the secret `KEY_FROM_YOINK_APP`
+(`npx wrangler secret put KEY_FROM_YOINK_APP`), deploy, open the Worker's URL on
 your iPhone and tap **In yoink öffnen**.
 
 ### Anywhere else
@@ -145,7 +145,7 @@ your iPhone and tap **In yoink öffnen**.
 import { createBridge, BridgeError } from 'yoink-bridge';
 
 const bridge = createBridge({
-  secret: process.env.YOINK_SECRET!, // the key from yoink, `whsec_…`
+  secret: process.env.KEY_FROM_YOINK_APP!, // the key from yoink, `whsec_…`
   name: 'Meine Bridge',
   destinations: {
     notes: {
@@ -194,7 +194,7 @@ Routes: `POST /` webhook · your `routes` · `GET /` the start page · else 404.
 
 | Binding (`WorkerEnv`) | |
 |---|---|
-| `YOINK_SECRET` | The key from yoink, `whsec_` + base64 of 32 bytes (surrounding whitespace is ignored). Every request is verified against it. Missing or invalid → signed requests answer 503 with the reason, and the start page says what to do. |
+| `KEY_FROM_YOINK_APP` | The key from yoink, `whsec_` + base64 of 32 bytes (surrounding whitespace is ignored). Every request is verified against it. Missing or invalid → signed requests answer 503 with the reason, and the start page says what to do. |
 | `BRIDGE_KV` | KV namespace for dedupe, per `webhook-id`: the stored response (`dedupe:done:<id>`, kept 48 h) and a short lease while it runs (`dedupe:pending:<id>`, `dedupe:released:<id>`, 5 min). Separate keys, because KV allows one write per second to the same key. |
 
 On a `*.workers.dev` host the manifest carries `relay.settings_url` (the
@@ -204,7 +204,7 @@ is left out.
 
 **The start page** (`GET /`) shows the bridge name, a button and QR code that
 open `yoink://ausgang?v=1&url=<origin>/&name=<name>` (never a key), and a
-warning while `YOINK_SECRET` is missing or invalid. No forms, no scripts,
+warning while `KEY_FROM_YOINK_APP` is missing or invalid. No forms, no scripts,
 `Cache-Control: no-store`, `X-Robots-Tag: noindex`, a strict CSP; German or
 English by `Accept-Language`.
 
@@ -415,7 +415,7 @@ import { createServer } from 'node:http';
 import { createBridge, describeBridge } from 'yoink-bridge';
 import { toNodeHandler } from 'yoink-bridge/node';
 
-const bridge = createBridge({ secret: process.env.YOINK_SECRET!, destinations: { … } });
+const bridge = createBridge({ secret: process.env.KEY_FROM_YOINK_APP!, destinations: { … } });
 console.log(describeBridge(bridge)); // what yoink will read
 createServer(toNodeHandler(bridge)).listen(8787);
 ```
@@ -449,11 +449,11 @@ npx yoink-bridge keygen [--env-file <path>]
   entry: an `entry.update` for that delivery (its `webhook-id` and
   `external_id`) with the new text, as yoink sends after an edit, and says
   what yoink would make of the answer (501: no more updates).
-- **`keygen`** prints `YOINK_SECRET=whsec_…` for local development, or with
-  `--env-file` writes it into that file (filling an empty `YOINK_SECRET=`
+- **`keygen`** prints `KEY_FROM_YOINK_APP=whsec_…` for local development, or with
+  `--env-file` writes it into that file (filling an empty `KEY_FROM_YOINK_APP=`
   line, refusing to replace an existing key).
 
-The key comes from `--secret`, else `YOINK_SECRET` in `--env-file` or the
+The key comes from `--secret`, else `KEY_FROM_YOINK_APP` in `--env-file` or the
 environment, else the CLI asks for it without echoing. `--secret` ends up in
 your shell history, so for a deployed bridge prefer the prompt:
 `npx yoink-bridge check --url https://yoink-bridge.<you>.workers.dev`.
@@ -478,7 +478,7 @@ package version, reported as `relay.sdk` (`yoink-bridge/0.8.0`).
 
 | What | Protected by |
 |---|---|
-| Every request to the bridge | the HMAC signature with the key (±300 s window, dedupe). yoink creates the key and keeps it in the device keychain; on the bridge it is configuration (on Cloudflare the Worker secret `YOINK_SECRET`). No web page, link or log shows it. |
+| Every request to the bridge | the HMAC signature with the key (±300 s window, dedupe). yoink creates the key and keeps it in the device keychain; on the bridge it is configuration (on Cloudflare the Worker secret `KEY_FROM_YOINK_APP`). No web page, link or log shows it. |
 | API keys (Linear, GitHub, …) | on Cloudflare, your Cloudflare login. Worker secrets are write-only and never go through yoink; the manifest only names missing ones. |
 | Your code and descriptions | your GitHub login (for a deployed base). Keep the repository private if your descriptions are personal. |
 | Destination names and descriptions | only signed pings get the manifest, although the bridge URL is public. |
@@ -486,7 +486,7 @@ package version, reported as `relay.sdk` (`yoink-bridge/0.8.0`).
 - **Whoever has the key** can send entries to your bridge (say, create
   issues) and read your descriptions; they never receive your entries. If it
   leaked, create a new one in yoink (Bridge einrichten) and replace
-  `YOINK_SECRET` on the bridge: the old key stops working right away.
+  `KEY_FROM_YOINK_APP` on the bridge: the old key stops working right away.
 - `keygen` keys are for local development; keep `.dev.vars` out of git (it is
   in `.gitignore`). Prefer the CLI's prompt over `--secret`.
 - The bridge verifies the signature on the raw bytes before parsing, compares

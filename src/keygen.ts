@@ -8,7 +8,7 @@ import { hasSecretLine, readIfExists, SECRET_ENV_VAR, UsageError, type CliIO } f
 import { generateSecret } from './link.ts';
 
 export interface KeygenArgs {
-  /** Write the key into this dotenv file (fills an empty `YOINK_SECRET=` line, else appends). */
+  /** Write the key into this dotenv file (fills an empty `KEY_FROM_YOINK_APP=` line, else appends). */
   envFile?: string;
 }
 
@@ -25,7 +25,7 @@ export function parseKeygenArgs(argv: string[]): KeygenArgs {
 
 const EMPTY_LINE = new RegExp(`^([ \\t]*(?:export[ \\t]+)?${SECRET_ENV_VAR}[ \\t]*=)[ \\t]*(?:""|'')?[ \\t]*(?:#.*)?$`, 'm');
 
-/** `text` with the key filled into its empty `YOINK_SECRET=` line, or appended. */
+/** `text` with the key filled into its empty `KEY_FROM_YOINK_APP=` line, or appended. */
 export function withSecretLine(text: string, secret: string): string {
   if (EMPTY_LINE.test(text)) return text.replace(EMPTY_LINE, `$1${secret}`);
   const separator = text.length > 0 && !text.endsWith('\n') ? '\n' : '';

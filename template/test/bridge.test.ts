@@ -15,7 +15,7 @@ const ORIGIN = 'https://yoink-bridge.example.workers.dev';
 
 /** A fake env. Values are placeholders: nothing is sent anywhere in these tests. */
 function env(extra: Record<string, string | undefined> = {}) {
-  return { BRIDGE_KV: new MemoryKV(), YOINK_SECRET: secret, ...extra };
+  return { BRIDGE_KV: new MemoryKV(), KEY_FROM_YOINK_APP: secret, ...extra };
 }
 
 const allKeys = {
@@ -69,7 +69,7 @@ describe('bridge.ts', () => {
     for (const d of parsed.destinations) expect(d.description).toMatch(/^Konkrete Aufgaben und Fehler/);
   });
 
-  it('a fresh deploy (only YOINK_SECRET) answers with both waiting for their settings, names only', async () => {
+  it('a fresh deploy (only KEY_FROM_YOINK_APP) answers with both waiting for their settings, names only', async () => {
     const fresh = parseManifest(await (await ping(env())).text());
     expect(fresh.destinations).toEqual([]);
     expect(fresh.waiting).toEqual([
@@ -166,11 +166,11 @@ describe('bridge.ts', () => {
     }
   });
 
-  it('without YOINK_SECRET: 503 with the reason, and the start page says what to do', async () => {
-    const noKey = env({ YOINK_SECRET: undefined });
+  it('without KEY_FROM_YOINK_APP: 503 with the reason, and the start page says what to do', async () => {
+    const noKey = env({ KEY_FROM_YOINK_APP: undefined });
     const res = await ping(noKey);
     expect(res.status).toBe(503);
-    expect((await res.json()).error).toMatch(/^YOINK_SECRET is not set/);
+    expect((await res.json()).error).toMatch(/^KEY_FROM_YOINK_APP is not set/);
     const html = await (await worker.fetch(new Request(`${ORIGIN}/`), noKey, ctx)).text();
     expect(html).toContain('The key is missing');
   });

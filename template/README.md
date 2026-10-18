@@ -23,7 +23,7 @@ It is yours: your destinations and your own code live in
    `whsec_`) and copies it.
 2. **Deploy.** Click **Deploy to Cloudflare** in the
    [yoink-bridge README](https://github.com/Deadweight-Labs/yoink-bridge#yoink-bridge)
-   and paste the key you just copied into the field **`YOINK_SECRET`**: that
+   and paste the key you just copied into the field **`KEY_FROM_YOINK_APP`**: that
    is the key from the yoink app, never one you make up, and the only field
    you have to fill. Cloudflare copies
    this base into a new repository in your GitHub account (choose a private
@@ -38,11 +38,11 @@ That's it. Linear and GitHub show up greyed out, "wartet auf …", until you
 add their keys (next section).
 
 **Deutsch, kurz:** In yoink unter Einstellungen › Ausgänge › Bridge
-einrichten den Schlüssel kopieren, beim Deploy als `YOINK_SECRET` einfügen,
+einrichten den Schlüssel kopieren, beim Deploy als `KEY_FROM_YOINK_APP` einfügen,
 danach die Worker-URL auf dem iPhone öffnen und „In yoink öffnen“ tippen.
 
 The start page never shows the key, and the link carries none:
-`yoink://ausgang?v=1&url=<your bridge>&name=<name>`. If `YOINK_SECRET` is
+`yoink://ausgang?v=1&url=<your bridge>&name=<name>`. If `KEY_FROM_YOINK_APP` is
 missing or mistyped, the page says so and links to the Worker's settings;
 signed requests then answer 503 with the reason.
 
@@ -64,7 +64,7 @@ a terminal: `npx wrangler secret put GITHUB_TOKEN`. Values can't be read back,
 and they never go through yoink: the manifest only names the missing ones.
 Then tap **Ziele aktualisieren** in yoink.
 
-The deploy form asks only for `YOINK_SECRET`: Cloudflare's form treats every
+The deploy form asks only for `KEY_FROM_YOINK_APP`: Cloudflare's form treats every
 secret it asks for as required, so the optional ones are added afterwards.
 
 Both destinations start in `mode: 'suggest'`: yoink only suggests, you
@@ -310,11 +310,11 @@ npm run cli -- keygen [--env-file <path>]
   entry: an `entry.update` for that delivery with the new text, as yoink
   sends after an edit, and says what yoink would make of the answer (501: no
   more updates).
-- **`keygen`** prints `YOINK_SECRET=whsec_…` for local development, or with
-  `--env-file` writes it into that file (filling an empty `YOINK_SECRET=`
+- **`keygen`** prints `KEY_FROM_YOINK_APP=whsec_…` for local development, or with
+  `--env-file` writes it into that file (filling an empty `KEY_FROM_YOINK_APP=`
   line, refusing to replace an existing key).
 
-The key comes from `--secret`, else `YOINK_SECRET` in `--env-file` or the
+The key comes from `--secret`, else `KEY_FROM_YOINK_APP` in `--env-file` or the
 environment, else the CLI asks for it without echoing. `--secret` ends up in
 your shell history, so for your deployed bridge prefer the prompt:
 `npm run cli -- check --url https://yoink-bridge.<you>.workers.dev`.

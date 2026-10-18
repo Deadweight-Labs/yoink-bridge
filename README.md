@@ -569,6 +569,11 @@ npm, because the template installs it from there.
 0.8.0, the first public release (formerly the unpublished `yoink-relay`).
 Publishing to npm is still pending. See [CHANGELOG.md](CHANGELOG.md).
 
+## Contributions
+
+This repository does not take issues or pull requests. You are welcome to
+fork it and change anything under the MIT license.
+
 ## License
 
 MIT, see [LICENSE](LICENSE).

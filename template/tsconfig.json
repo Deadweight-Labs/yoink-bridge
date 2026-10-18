@@ -1,0 +1,19 @@
+{
+  // `npm run typecheck`: your bridge.ts, the recipes and the test. Nothing is
+  // emitted; wrangler bundles bridge.ts itself.
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": [],
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "allowImportingTsExtensions": true,
+    "skipLibCheck": true,
+    "noEmit": true
+  },
+  "include": ["bridge.ts", "recipes", "test"]
+}

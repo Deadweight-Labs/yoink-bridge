@@ -1,0 +1,10 @@
+# The key from yoink: Einstellungen › Ausgänge › Bridge einrichten › Schlüssel kopieren.
+# For local development, `npm run keygen` writes one into .dev.vars instead.
+YOINK_SECRET=
+
+# Optional: each destination in bridge.ts turns on once its settings exist. In
+# Cloudflare, add them later under Worker › Settings › Variables and Secrets.
+# GITHUB_TOKEN=
+# GITHUB_REPO=owner/name
+# LINEAR_API_KEY=
+# LINEAR_TEAM=

@@ -1,0 +1,14 @@
+// Your Worker. The Deploy button writes your Worker name and the id of the
+// KV namespace here; after that, this file is yours.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "yoink-bridge",
+  "main": "bridge.ts",
+  "compatibility_date": "2025-10-01",
+  "observability": { "enabled": true },
+  // Keep settings you add in the dashboard (e.g. GITHUB_REPO as plain text)
+  // when a push deploys again. Secrets are always kept.
+  "keep_vars": true,
+  // Recent delivery ids for dedupe (48 h). Created for you on the first deploy.
+  "kv_namespaces": [{ "binding": "BRIDGE_KV" }]
+}

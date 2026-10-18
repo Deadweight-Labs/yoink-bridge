@@ -1,0 +1,16 @@
+# Weekly updates for the SDK's dev tools and the CI actions. The template has
+# its own dependabot.yml, which works in deployed copies (template/ becomes
+# their root).
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      dev-tools:
+        patterns: ["*"]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

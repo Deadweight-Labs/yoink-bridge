@@ -1,0 +1,34 @@
+{
+  // Type-checks everything: the SDK, the template (bridge.ts, recipes, its
+  // test), tests and the Node example. `npm run typecheck`. Nothing is emitted
+  // here (tsconfig.build.json emits dist/ for npm): in this repository Node
+  // runs the CLI from source (type stripping), which is why imports name the
+  // .ts files and only erasable syntax is allowed. `paths` points the
+  // template's `yoink-bridge` imports at src/, like vitest.config.ts and
+  // `npm run dev` do.
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["node"],
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "allowImportingTsExtensions": true,
+    "erasableSyntaxOnly": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "paths": {
+      "yoink-bridge": ["./src/index.ts"],
+      "yoink-bridge/cloudflare": ["./src/cloudflare/index.ts"],
+      "yoink-bridge/*": ["./src/*.ts"]
+    }
+  },
+  "include": ["src", "test", "examples", "template", "scripts", "vitest.config.ts"],
+  "exclude": ["template/node_modules"]
+}

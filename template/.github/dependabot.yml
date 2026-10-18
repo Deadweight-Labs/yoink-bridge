@@ -1,0 +1,17 @@
+# Weekly dependency updates, including the SDK (`yoink-bridge`). Merging a PR
+# redeploys your Worker via Workers Builds, after `npm run build` (typecheck +
+# tests) passed. What changed in the SDK:
+# https://github.com/Deadweight-Labs/yoink-bridge/blob/main/CHANGELOG.md
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      sdk:
+        patterns: ["yoink-bridge"]
+      runtime:
+        patterns: ["wrangler", "@anthropic-ai/sdk", "zod"]
+      dev-tools:
+        patterns: ["typescript", "vitest"]

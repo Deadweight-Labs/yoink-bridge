@@ -1,0 +1,11 @@
+{
+  // Guard: what runs in the Worker (the SDK without its Node-only parts, the
+  // template's bridge.ts and the recipes) must compile with Web globals only, no Node
+  // types, so it keeps running on Workers, Deno and Bun.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": []
+  },
+  "include": ["src", "template/bridge.ts", "template/recipes"],
+  "exclude": ["src/node.ts", "src/cli.ts", "src/cli-shared.ts", "src/client.ts", "src/keygen.ts", "src/check.ts", "src/send.ts", "src/run-cli.ts"]
+}

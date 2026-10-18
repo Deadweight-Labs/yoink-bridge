@@ -1,0 +1,77 @@
+{
+  "name": "yoink-bridge",
+  "version": "0.8.0",
+  "description": "Your own bridge from yoink to Linear, GitHub Issues or your own code: an SDK for Cloudflare Workers, Node, Deno and Bun, plus a base Worker you deploy with one click. Signed entries verified, retries deduplicated.",
+  "license": "MIT",
+  "author": "Deadweight Labs",
+  "type": "module",
+  "keywords": [
+    "yoink",
+    "webhook",
+    "standard-webhooks",
+    "bridge",
+    "cloudflare-workers",
+    "linear",
+    "github-issues"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./cloudflare": {
+      "types": "./dist/cloudflare/index.d.ts",
+      "default": "./dist/cloudflare/index.js"
+    },
+    "./node": {
+      "types": "./dist/node.d.ts",
+      "default": "./dist/node.js"
+    },
+    "./presets/*": {
+      "types": "./dist/presets/*.d.ts",
+      "default": "./dist/presets/*.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "yoink-bridge": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "src",
+    "PROTOCOL.md",
+    "CHANGELOG.md"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.build.json && node scripts/fix-dts.ts",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.web.json",
+    "prepublishOnly": "npm run typecheck && npm test && npm run build",
+    "dev": "wrangler dev -c wrangler.dev.jsonc",
+    "cli": "node src/cli.ts",
+    "keygen": "node src/cli.ts keygen --env-file .dev.vars",
+    "check": "node src/cli.ts check --url http://localhost:8787 --env-file .dev.vars",
+    "send": "node src/cli.ts send --url http://localhost:8787 --env-file .dev.vars"
+  },
+  "devDependencies": {
+    "@anthropic-ai/sdk": "^0.135.0",
+    "@types/node": "^24.19.2",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5",
+    "wrangler": "^4.151.0",
+    "zod": "^4.6.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Deadweight-Labs/yoink-bridge.git"
+  },
+  "homepage": "https://github.com/Deadweight-Labs/yoink-bridge#readme",
+  "bugs": {
+    "url": "https://github.com/Deadweight-Labs/yoink-bridge/issues"
+  }
+}

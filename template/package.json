@@ -1,0 +1,52 @@
+{
+  "name": "my-yoink-bridge",
+  "private": true,
+  "description": "My yoink bridge on Cloudflare Workers, built on the yoink-bridge SDK. Edit bridge.ts.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "build": "npm run typecheck && npm test",
+    "test": "vitest run",
+    "typecheck": "tsc",
+    "cli": "yoink-bridge",
+    "keygen": "yoink-bridge keygen --env-file .dev.vars",
+    "check": "yoink-bridge check --url http://localhost:8787 --env-file .dev.vars",
+    "send": "yoink-bridge send --url http://localhost:8787 --env-file .dev.vars"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.135.0",
+    "yoink-bridge": "^0.8.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5",
+    "wrangler": "^4.151.0"
+  },
+  "cloudflare": {
+    "bindings": {
+      "YOINK_SECRET": {
+        "description": "**Required.** The key from yoink: **Einstellungen › Ausgänge › Bridge einrichten › Schlüssel kopieren**, then paste it here. It starts with `whsec_`. yoink signs every entry with it; this bridge never shows it."
+      },
+      "BRIDGE_KV": {
+        "description": "Remembers recent delivery ids for 48 hours, so an entry yoink sends again after a timeout is not handled twice. The default name is fine."
+      },
+      "GITHUB_TOKEN": {
+        "description": "Optional, add later as a secret (Worker › Settings › Variables and Secrets). Turns on the `github` destination together with `GITHUB_REPO`. GitHub → Settings → Developer settings → [Fine-grained tokens](https://github.com/settings/personal-access-tokens/new): only your repository, permission **Issues: Read and write**."
+      },
+      "GITHUB_REPO": {
+        "description": "Optional, add later. The repository for new issues, `owner/name` (e.g. `octocat/hello-world`)."
+      },
+      "LINEAR_API_KEY": {
+        "description": "Optional, add later as a secret (Worker › Settings › Variables and Secrets). Turns on the `linear` destination together with `LINEAR_TEAM`. Linear → **Settings → Security & access → Personal API keys** → New key."
+      },
+      "LINEAR_TEAM": {
+        "description": "Optional, add later. The Linear **team key**, the prefix of its issue ids (e.g. `ABC` for `ABC-12`)."
+      }
+    }
+  }
+}

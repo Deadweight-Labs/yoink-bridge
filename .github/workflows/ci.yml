@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  sdk:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [22, 24]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: npm pack
+      - uses: actions/upload-artifact@v4
+        if: matrix.node == 24
+        with:
+          name: package
+          path: yoink-bridge-*.tgz
+
+  # The template as a deployed copy sees it: on its own, with the SDK installed
+  # from the package built above instead of npm.
+  template:
+    needs: sdk
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: template
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      - uses: actions/download-artifact@v5
+        with:
+          name: package
+          path: ${{ runner.temp }}/package
+      - run: npm pkg set dependencies.yoink-bridge=file:$(ls ${{ runner.temp }}/package/yoink-bridge-*.tgz)
+      - run: npm install --no-audit --no-fund
+      - run: npm run build
+      - run: npx wrangler deploy --dry-run --outdir ${{ runner.temp }}/worker

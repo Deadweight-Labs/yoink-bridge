@@ -1,0 +1,15 @@
+{
+  // Emits the npm package into dist/: JavaScript (relative `.ts` imports
+  // rewritten to `.js`), declarations and source maps. `npm run build`.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "rootDir": "src",
+    "outDir": "dist",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "rewriteRelativeImportExtensions": true
+  },
+  "include": ["src"]
+}

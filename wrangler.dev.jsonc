@@ -1,0 +1,18 @@
+// `npm run dev` in this repository: runs the template's bridge.ts against the
+// SDK in src/ (a deployed copy imports `yoink-bridge` from npm instead).
+// Settings come from .dev.vars here (`npm run keygen`).
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "yoink-bridge-dev",
+  "main": "template/bridge.ts",
+  "compatibility_date": "2025-10-01",
+  "kv_namespaces": [{ "binding": "BRIDGE_KV" }],
+  "alias": {
+    "yoink-bridge": "./src/index.ts",
+    "yoink-bridge/cloudflare": "./src/cloudflare/index.ts",
+    "yoink-bridge/presets/discord": "./src/presets/discord.ts",
+    "yoink-bridge/presets/github": "./src/presets/github.ts",
+    "yoink-bridge/presets/linear": "./src/presets/linear.ts",
+    "yoink-bridge/presets/slack": "./src/presets/slack.ts"
+  }
+}

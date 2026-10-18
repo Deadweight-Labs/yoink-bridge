@@ -30,7 +30,7 @@
   "cloudflare": {
     "bindings": {
       "YOINK_SECRET": {
-        "description": "**Paste the key from your yoink app here — don't make one up.** On your iPhone, in yoink: **Einstellungen › Ausgänge › Bridge einrichten › Schlüssel kopieren**, then paste it into this field. It starts with `whsec_`. Only yoink has this key, so only yoink can send to your bridge; the bridge never shows it.\n\n_Deutsch:_ Den Schlüssel aus der yoink-App hier einfügen (Einstellungen › Ausgänge › Bridge einrichten › Schlüssel kopieren). Er beginnt mit `whsec_`."
+        "description": "**Paste the key from your yoink app here — don't make one up.** On your iPhone, in yoink: **Einstellungen › Ausgänge › Bridge einrichten › Schlüssel kopieren**, then paste it into this field. It starts with `whsec_`. Only yoink has this key, so only yoink can send to your bridge; the bridge never shows it. __Deutsch:__ Den Schlüssel aus der yoink-App hier einfügen (Einstellungen › Ausgänge › Bridge einrichten › Schlüssel kopieren). Er beginnt mit `whsec_`."
       },
       "BRIDGE_KV": {
         "description": "Remembers recent delivery ids for 48 hours, so an entry yoink sends again after a timeout is not handled twice. The default name is fine."

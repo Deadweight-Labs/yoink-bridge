@@ -23,8 +23,8 @@ or whatever your code does.
    (`https://yoink-bridge.<you>.workers.dev`) on your iPhone and tap **In
    yoink öffnen**, or scan the QR code on that page.
 4. **Turn on Linear or GitHub** (optional): add their keys in Cloudflare
-   under Workers & Pages › your Worker › Settings › Variables and Secrets,
-   then tap **Ziele aktualisieren** in yoink. Which keys:
+   under Workers & Pages › your Worker › Settings › Variables and Secrets ›
+   Add (type **Secret**), deploy, then tap **Ziele aktualisieren** in yoink. Which keys:
    [template/README.md › Turn on Linear and GitHub](template/README.md#turn-on-linear-and-github).
 
 **Deutsch, kurz:** In yoink unter Einstellungen › Ausgänge › Bridge
